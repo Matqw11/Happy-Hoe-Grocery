@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement System</title>
+    <link rel="stylesheet" href="/styles/procurement.css">
+</head>
+
+<body>
+    <div class="bgcontainer">
+        <div class="form-container">
+            <h1>PROCUREMENT</h1>
+            <form action="/procurementPage" method="POST">
+                <div class="procurement">
+                    <div class="form-group1">
+                        <input class="form-input" type="text" id="produce-name" placeholder="Produce Name"
+                            name="produceName" required>
+                    </div>
+                    <div class="form-group1">
+                        <input class="form-input" type="text" id="dealers-name" placeholder="dealers-Name" pattern="[a-zA-Z0-9]+" required minlength="2" 
+                            name="dealerName">
+                    </div>
+                </div>
+                <div class="procurement">
+                    <div class="form-group1">
+                        <input class="form-input" type="text" id="TYPE" placeholder="type of Produce" name="Type" minlength="2"  title="Enter only letters and not less than two characters">
+                    </div>
+                    <div class="form-group1">
+                        <input class="form-input" type="number" id="COST" placeholder="cost" name="Cost" required minlength="5">
+                    </div>
+                </div>
+                <div class="procurement">
+                    <div class="form-group1">
+                        <input class="form-input" type="date" id="DATE" placeholder="date" required name="Date">
+                    </div>
+                    <div class="form-group1">
+                        <input class="form-input" type="text" id="BRANCH-NAME" placeholder="branch-name" required
+                            name="BranchName">
+                    </div>
+                </div>
+                <div class="procurement">
+                    <div class="form-group1">
+                        <input class="form-input" type="date" id="TIME" placeholder="time" name="Time">
+                    </div>
+                    <div class="form-group1">
+                        <input class="form-input" type="number" required id="TONNAGE" min="3" value="0" placeholder="tonnage" name="Tonnage" >
+                    </div>
+                </div>
+                <div class="procurement">
+                    <div class="form-group1">
+                        <input class="form-input" type="phone" id="phone" minlength="10" placeholder="Contact details" name="phone">
+                        <small>Format: 0737245234</small>
+                    </div>
+                </div>
+
+
+                <div class="buttons">
+                    <button type="button" class="cancel-btn">CANCEL</button>
+                    <button type="submit" class="save-btn">SAVE</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</body>
+
+</html>

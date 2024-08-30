@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Sales Form</title>
+    <link rel="stylesheet" href="/styles/Credit.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+</head>
+
+<body>
+    <div class="bgcontainer">
+        <div class="form-container">
+            <h2>CREDIT SALES</h2>
+            <form action="/salesPage" method="POST">
+                <div class="credit-input">
+                    <div class="form-group1">
+                        <input class="form-input" type="text" id="buyerName" placeholder="Buyer's Name" name="buyerName">
+                    </div>
+                    <div class="form-group1">
+                        <input class="form-input" type="text" id="salesAgentName" placeholder="Sales Agent's Name" name="salesAgentName">
+                    </div>
+                </div>
+                <div class="credit-input">
+                    <div class="form-group1">
+                        <input placeholder="National ID" class="form-input" type="text" id="nationalId" name="nationalId">
+                    </div>
+                    <div class="form-group1">
+                        <input placeholder="Due Date" class="form-input" type="date" id="dueDate" name="dueDate">
+                    </div>
+                </div>
+                <div class="credit-input">
+                    <div class="form-group1">
+                        <input placeholder="Location" class="form-input" type="text" id="location" name="location">
+                    </div>
+                    <div class="form-group1">
+                        <input placeholder="Produce Name" class="form-input" type="text" id="produceName" name="produceName">
+                    </div>
+                </div>
+                <div class="credit-input">
+                    <div class="form-group1">
+                        <input class="form-input" id="phone" type="tel" name="phone">
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+                        <script src="/javascript/phone.js"></script>
+                    </div>
+                    <div class="form-group1">
+                        <input placeholder="Type" class="form-input" type="text" id="type" name="type">
+                    </div>
+                </div>
+                <div class="credit-input">
+                    <div class="form-group1">
+                        <input placeholder="Amount Due" class="form-input" type="text" id="amountDue" name="amountDue">
+                    </div>
+                    <div class="form-group1">
+                        <input placeholder="Tonnage" class="form-input" type="text" id="tonnage" name="tonnage">
+                    </div>
+                </div>
+                <div class="form-group btn-container">
+                    <button class="save-btn" type="submit">Save</button>
+                    <button class="cancel-btn" type="button" onclick="handleCancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function handleCancel() {
+            alert('Request cancelled');
+            window.location.href = '/home';
+        }
+    </script>
+</body>
+
+</html>

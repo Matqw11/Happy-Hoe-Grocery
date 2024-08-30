@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        .piechart {
+            width: 80%;
+            height: 70%;
+            border-radius: 50%;
+            background-image: conic-gradient(#dc3545 70deg,
+                    #fd7e14 0 235deg,
+                    #007bff 0);
+        }
+
+        .bgcontainer {
+            height: 100vh;
+            background-position: center;
+            background-size: cover;
+            background-image: url('/images/bgimg.jpeg');
+            background-attachment: fixed;
+            top: 0px;
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+
+        .left-section {
+            width: 40%;
+            padding: 20px;
+            background: url('wooden_texture.jpg') no-repeat center center;
+            background-size: cover;
+
+        }
+
+        .left-section h2 {
+            color: white;
+        }
+
+        .right-section {
+            width: 60%;
+            padding-top: 40px;
+            background: url('fruits_vegetables.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 120px;
+            margin: 20px 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card.blue {
+            background: #007bff;
+            color: white;
+        }
+
+        .card.orange {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .card.red {
+            background: #dc3545;
+            color: white;
+        }
+
+        .card button {
+            background: white;
+            border: none;
+            border-radius: 4px;
+            color: black;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
+        .card button:hover {
+            color: rgb(92, 86, 3);
+            background-color: rgb(187, 255, 187);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bgcontainer">
+        <div class="left-section">
+            <h2>STOCK STATUS</h2>
+            <div class="piechart">
+                <!-- Pie chart would be here -->
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="card blue">
+                <h3>SALES</h3>
+                <button onclick="salespage">ADD</button>
+            </div>
+            <div class="card orange">
+                <h3>PROCUREMENT</h3>
+                <button>ADD</button>
+            </div>
+            <div class="card red">
+                <h3>CREDIT SALE</h3>
+                <button href="Credit _sales_screen.html">
+                    <a href="Credit _sales_screen.html">ADD</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

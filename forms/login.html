@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/styles/login_page.css">
+</head>
+<body>
+    <div class="bgcontainer">
+        <div class="menu">
+            <div class="logo">
+                <img src="/images/logo.jpeg" width="100px" height="100px" alt="Happy Food Logo">
+            </div>
+        </div>
+        <div class="login-container">
+            <h2>Login</h2>
+            <form action="http://localhost:3000/login" method="post">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <div class="submitbtn">
+                    <button type="submit">Log in as manager</button>
+                    <button type="submit">Log in as sales agent</button>
+                </div>
+            </form>
+            <a href="#">Forgot password?</a>
+        </div>
+    </div>
+</body>
+</html>
