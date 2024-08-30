@@ -11,12 +11,23 @@ mongoose.connect('mongodb://localhost:27017/HappyHoeDb')
 const loginSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        enum: ['manager', 'agent'],
+        required: true
+    },
+    branch: {
+        type: String,
+        enum: ['Matugga', 'Maganjo'],
+        required: true
+    }
 })
 
 const salesSchema = new mongoose.Schema({

@@ -45,6 +45,9 @@ input {
 
 .form-group {
     margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .form-group label {

@@ -7,7 +7,7 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/styles/admin.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
@@ -25,28 +25,25 @@
             <div class="sidebar-middle">
                 <div class="sidebar-content">
                     <img src="/assets/home-variant.svg" alt="home" />
-                    <h2><a href="">Home</a></h2>
+                    <h2><a href="/">Home</a></h2>
                 </div>
-                <div class="sidebar-content">
-                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
-                    <h2><a href="/salesPage">Sales</a></h2>
-                </div>
-                <div class="sidebar-content">
-                    <img src="/assets/message.svg" alt="messages" />
-                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
-                </div>
-                <div class="sidebar-content">
-                    <img src="/assets/clock-time-three.svg" alt="history" />
-                    <h2><a href="/procurementPage">Procement Pages</a></h2>
-                </div>
-                <div class="sidebar-content">
-                    <img src="/assets/note-multiple.svg" alt="tasks" />
-                    <h2><a href="">Tasks</a></h2>
-                </div>
-                <div class="sidebar-content">
-                    <img src="/assets/account-group.svg" alt="communities" />
-                    <h2><a href="">Communities</a></h2>
-                </div>
+                {{#if isLoggedIn}}
+                    <div class="sidebar-content">
+                        <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                        <h2><a href="/salesPage">Sales</a></h2>
+                    </div>
+                    <div class="sidebar-content">
+                        <img src="/assets/message.svg" alt="messages" />
+                        <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                    </div>
+                    {{#if (eq userRole 'manager')}}
+                        <div class="sidebar-content">
+                            <img src="/assets/clock-time-three.svg" alt="history" />
+                            <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                        </div>
+                    {{/if}}
+                    <!-- ... other authenticated-only sidebar items ... -->
+                {{/if}}
             </div>
             <div class="sidebar-bottom">
                 <div class="sidebar-content">
@@ -70,19 +67,31 @@
 
                     <div>
                         <p><strong>Welcome to Happy Hoe Grocery</strong></p>
-                        <h2><strong>This is the available Stock</strong></h2>
+                        {{#if isLoggedIn}}
+                            <h2><strong>This is the available Stock</strong></h2>
+                        {{else}}
+                            <h2><strong>Please sign in to view stock and access features</strong></h2>
+                        {{/if}}
                     </div>
                 </div>
             </div>
             <div class="header-right">
                 <div class="profile-info">
                     <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
-
-                    <p><strong>Sign in Here!</strong></p>
+                    {{#if isLoggedIn}}
+                        <p><strong>Welcome, {{userName}}!</strong></p>
+                        <p>Branch: {{userBranch}}</p>
+                        <p>Role: {{userRole}}</p>
+                    {{else}}
+                        <p><strong>Guest</strong></p>
+                    {{/if}}
                 </div>
                 <div class="actions">
-                    <button type="submit"> <a href="/signup">Sign in</a></button>
-
+                    {{#if isLoggedIn}}
+                        <button type="button" onclick="signOut()">Sign out</button>
+                    {{else}}
+                        <button type="button"><a href="/login">Sign in</a></button>
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -92,7 +101,7 @@
                 <div class="project-cards">
                     <div class="card">
                         <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Tomatoes">
+                            <img src="https://picsum.photos/200/300" alt="Beans">
                             <div class="card-content">
                                 <h2>Beans</h2>
                                 <p>Fresh Beans Straight from the Garden</p>
@@ -106,7 +115,7 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Tomatoes">
+                            <img src="https://picsum.photos/200/300" alt="Rice">
                             <div class="card-content">
                                 <h2>Rice</h2>
                                 <p>Fresh Rice Straight from the Garden</p>
@@ -120,7 +129,7 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Tomatoes">
+                            <img src="https://picsum.photos/200/300" alt="Cow peas">
                             <div class="card-content">
                                 <h2>Cow peas</h2>
                                 <p>Fresh Cow peas Straight from the Garden</p>
@@ -132,13 +141,11 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="project-cards2">
                     <div class="card">
                         <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Tomatoes">
+                            <img src="https://picsum.photos/200/300" alt="Groundnuts">
                             <div class="card-content">
                                 <h2>Groundnuts</h2>
                                 <p>Fresh Groundnuts Straight from the Garden</p>
@@ -152,7 +159,7 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Tomatoes">
+                            <img src="https://picsum.photos/200/300" alt="Soybeans">
                             <div class="card-content">
                                 <h2>Soybeans</h2>
                                 <p>Fresh Soybeans Straight from the Garden</p>
@@ -166,22 +173,46 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Tomatoes">
+                            <img src="https://picsum.photos/200/300" alt="Maize">
                             <div class="card-content">
                                 <h2>Maize</h2>
                                 <p>Fresh Maize Straight from the Garden</p>
                             </div>
                         </div>
-
                         <div class="project-icons-container">
                             <div class="project-icons">
-                                <label for="">1000 tonnes</label>                             </div>
+                                <label for="">1000 tonnes</label>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+           
         </div>
+    </div>
+
+    <script>
+        function signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                fetch('/signout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Failed to sign out. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while signing out. Please try again.');
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>
