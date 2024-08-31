@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const hbs = require('hbs');
 const session = require('express-session');
-const { collection, Sales, procurement } = require('./mongodb');
+const { collection, Sales, procurement, Product } = require('./mongodb');
 
 // Add this near the top of your file, after requiring hbs
 hbs.registerHelper('eq', function (a, b) {
@@ -47,25 +47,29 @@ const isManager = (req, res, next) => {
 };
 
 // Make home the landing page
-app.get('/', (req, res) => {
-    // Fetch current stock data from the database
-    // This is a placeholder. Replace with actual database query.
-    const currentStock = [
-        { name: 'Beans', quantity: '1000 tonnes' },
-        { name: 'Rice', quantity: '1000 tonnes' },
-        { name: 'Cow peas', quantity: '1000 tonnes' },
-        { name: 'Groundnuts', quantity: '1000 tonnes' },
-        { name: 'Soybeans', quantity: '1000 tonnes' },
-        { name: 'Maize', quantity: '1000 tonnes' }
-    ];
+app.get('/', async (req, res) => {
+    try {
+        const productData = await Product.find({});
+        console.log('Fetched product data:', productData);
+        
+        const viewData = {
+            isLoggedIn: !!req.session.user,
+            productData: productData
+        };
 
-    res.render('home', { 
-        isLoggedIn: !!req.session.user,
-        userName: req.session.user ? req.session.user.username : null,
-        userBranch: req.session.user ? req.session.user.branch : null,
-        userRole: req.session.user ? req.session.user.role : null,
-        currentStock: currentStock
-    });
+        if (req.session.user) {
+            viewData.userName = req.session.user.username;
+            viewData.userBranch = req.session.user.branch;
+            viewData.userRole = req.session.user.role;
+        }
+
+        console.log('View data:', viewData);  // Add this line
+
+        res.render('home', viewData);
+    } catch (error) {
+        console.error('Error fetching product data:', error);
+        res.status(500).render('error', { message: 'Error loading home page' });
+    }
 });
 
 app.get('/login', (req, res) => {
@@ -107,34 +111,71 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home', { 
-        isLoggedIn: true, 
-        userName: req.session.user.username,
-        userBranch: req.session.user.branch,
-        userRole: req.session.user.role
-    });
+app.get('/home', isAuthenticated, async (req, res) => {
+    try {
+        const productData = await Product.find({});
+        res.render('home', { 
+            isLoggedIn: true, 
+            userName: req.session.user.username,
+            userBranch: req.session.user.branch,
+            userRole: req.session.user.role,
+            productData: productData
+        });
+    } catch (error) {
+        console.error('Error fetching product data:', error);
+        res.status(500).render('error', { message: 'Error loading home page' });
+    }
 });
 
-app.get('/salesPage', isAuthenticated, (req, res) => {
-    res.render('salesPage', { user: req.session.user });
+app.get('/salesPage', isAuthenticated, async (req, res) => {
+    try {
+        const products = await Product.find({ tonnage: { $gt: 0 } });
+        res.render('salesPage', { 
+            user: req.session.user,
+            products: products
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send('Error loading sales page');
+    }
 });
 
 app.post('/salesPage', isAuthenticated, async (req, res) => {
-    const salesData = {
-        buyerName: req.body.buyerName,
-        salesAgentName: req.body.salesAgentName,
-        nationalId: req.body.nationalId,
-        dueDate: req.body.dueDate,
-        location: req.body.location,
-        produceName: req.body.produceName,
-        phone: req.body.phone,
-        type: req.body.type,
-        amountDue: req.body.amountDue,
-        tonnage: req.body.tonnage
-    };
-    Sales.insertMany([salesData]);
-    res.send('<script>alert("Data saved successfully!"); window.location.href = "/home";</script>')
+    try {
+        const { produceName, tonnage, buyerName, salesAgentName, nationalId, dueDate, phone, type, amountDue } = req.body;
+        
+        // Check if product exists and has enough tonnage
+        const product = await Product.findOne({ name: produceName });
+        if (!product || product.tonnage < parseFloat(tonnage)) {
+            return res.status(400).send('<script>alert("Invalid product or insufficient tonnage"); window.location.href = "/salesPage";</script>');
+        }
+
+        // Update product tonnage
+        product.tonnage -= parseFloat(tonnage);
+        await product.save();
+
+        // Create sales record
+        const salesData = {
+            buyerName,
+            salesAgentName,
+            nationalId,
+            dueDate,
+            produceName,
+            phone,
+            type,
+            amountDue,
+            tonnage: parseFloat(tonnage)
+        };
+        await Sales.create(salesData);
+
+        console.log('Sale recorded:', salesData);
+        console.log('Updated product tonnage:', product);
+
+        res.send('<script>alert("Sale recorded successfully!"); window.location.href = "/salesPage";</script>');
+    } catch (error) {
+        console.error('Error saving sales data:', error);
+        res.status(500).send('<script>alert("Error saving sales data"); window.location.href = "/salesPage";</script>');
+    }
 });
 
 app.get('/procurementPage', isAuthenticated, isManager, (req, res) => {
@@ -145,19 +186,44 @@ app.get('/procurementPage', isAuthenticated, isManager, (req, res) => {
 });
 
 app.post('/procurementPage', isAuthenticated, isManager, async (req, res) => {
-    const procurementData = {
-        produceName: req.body.produceName,
-        dealerName: req.body.dealerName,
-        Type: req.body.Type,
-        Cost: req.body.Cost,
-        Date: req.body.Date,
-        BranchName: req.body.BranchName,
-        Time: req.body.Time,
-        Tonnage: req.body.Tonnage,
-        phone: req.body.phone
+    try {
+        const { produceName, dealerName, Type, Cost, Date, BranchName, Time, Tonnage, phone } = req.body;
+        
+        console.log('Received procurement data:', { produceName, Tonnage });
+
+        // Find or create the product
+        let product = await Product.findOne({ name: produceName });
+        if (!product) {
+            product = new Product({ name: produceName, tonnage: 0 });
+            console.log('Created new product:', product);
+        } else {
+            console.log('Found existing product:', product);
+        }
+        
+        // Update the product's tonnage
+        product.tonnage += parseFloat(Tonnage);
+        await product.save();
+        console.log('Updated product:', product);
+
+        // Create the procurement record
+        const procurementData = {
+            produceName,
+            dealerName,
+            Type,
+            Cost,
+            Date,
+            BranchName,
+            Time,
+            Tonnage,
+            phone
+        };
+        await procurement.insertMany([procurementData]);
+
+        res.send('<script>alert("Data saved successfully!"); window.location.href = "/home";</script>');
+    } catch (error) {
+        console.error('Error saving procurement data:', error);
+        res.status(500).send('Error saving procurement data');
     }
-    procurement.insertMany([procurementData]);
-    res.send('<script>alert("Data saved successfully!"); window.location.href = "/home";</script>')
 });
 
 app.get('/managerDashboard', isAuthenticated, (req, res) => {
@@ -176,7 +242,19 @@ app.get('/fetchProcurementData', async (req, res) => {
 
 app.post('/updateProcurementData', async (req, res) => {
     try {
-        const { _id, produceName, dealerName, Type, Cost, Date, BranchName, Time, Tonnage, phone } = req.body; // Add phone here
+        const { _id, produceName, dealerName, Type, Cost, Date, BranchName, Time, Tonnage, phone } = req.body;
+        
+        // Find the existing procurement
+        const existingProcurement = await procurement.findById(_id);
+        
+        // Update the product's tonnage
+        const tonnageDifference = parseFloat(Tonnage) - parseFloat(existingProcurement.Tonnage);
+        await Product.findOneAndUpdate(
+            { name: produceName },
+            { $inc: { tonnage: tonnageDifference } }
+        );
+
+        // Update the procurement record
         await procurement.findByIdAndUpdate(_id, {
             produceName,
             dealerName,
@@ -186,8 +264,9 @@ app.post('/updateProcurementData', async (req, res) => {
             BranchName,
             Time,
             Tonnage,
-            phone // Add this line
+            phone
         });
+
         res.send('Data updated successfully');
     } catch (error) {
         console.error('Error updating procurement data:', error);
@@ -208,6 +287,35 @@ app.post('/signout', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
+// Add this function to create initial products if none exist
+async function createInitialProducts() {
+    const productCount = await Product.countDocuments();
+    if (productCount === 0) {
+        const initialProducts = [
+            { name: 'Beans', tonnage: 1000 },
+            { name: 'Rice', tonnage: 1000 },
+            { name: 'Cow peas', tonnage: 1000 },
+            { name: 'Groundnuts', tonnage: 1000 },
+            { name: 'Soybeans', tonnage: 1000 },
+            { name: 'Maize', tonnage: 1000 }
+        ];
+        await Product.insertMany(initialProducts);
+        console.log('Initial products created');
+    }
+}
+
+// Call this function when your server starts
+app.listen(3000, async () => {
     console.log('Server started on port 3000');
+    await createInitialProducts();
+});
+
+app.get('/fetchProductData', async (req, res) => {
+    try {
+        const productData = await Product.find({});
+        res.json(productData);
+    } catch (error) {
+        console.error('Error fetching product data:', error);
+        res.status(500).send('Error fetching product data');
+    }
 });

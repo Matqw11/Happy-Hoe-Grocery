@@ -4,30 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="/styles/admin.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Manager Dashboard</h1>
-    <table id="procurementTable" class="display">
-        <thead>
-            <tr>
-                <th>Produce Name</th>
-                <th>Dealer Name</th>
-                <th>Type</th>
-                <th>Cost</th>
-                <th>Date</th>
-                <th>Branch Name</th>
-                <th>Time</th>
-                <th>Tonnage</th>
-                <th>Phone</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-content">
+                    <img src="/assets/view-dashboard.svg" alt="dashboard icon" />
+                    <h1><a href="">Happy Hoe Grocery</a></h1>
+                </div>
+            </div>
+            <div class="sidebar-middle">
+                <div class="sidebar-content">
+                    <img src="/assets/home-variant.svg" alt="home" />
+                    <h2><a href="/">Home</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
+            </div>
+            <div class="sidebar-bottom">
+                <div class="sidebar-content">
+                    <img src="/assets/cog.svg" alt="settings" />
+                    <h2><a href="">Settings</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/shield-check.svg" alt="support" />
+                    <h2><a href="">Privacy</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/help-box.svg" alt="privacy" />
+                    <h2><a href="">Support</a></h2>
+                </div>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div>
+                        <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                        <h2><strong>Manager Dashboard</strong></h2>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
+                        <p><strong>Welcome, {{user.username}}!</strong></p>
+                        <p>Branch: {{user.branch}}</p>
+                    </div>
+                    <div class="actions">
+                        <button type="button" onclick="signOut()">Sign out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-content">
+                <h1>Procurement Data</h1>
+                <table id="procurementTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Produce Name</th>
+                            <th>Dealer Name</th>
+                            <th>Type</th>
+                            <th>Cost</th>
+                            <th>Date</th>
+                            <th>Branch Name</th>
+                            <th>Time</th>
+                            <th>Tonnage</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <script>
         $(document).ready(function () {
@@ -48,7 +116,13 @@
                     {"data": "phone"},
                     {
                         "data": null,
-                        "defaultContent": "<button class='edit-btn'>Edit</button>"
+                        "render": function(data, type, row) {
+                            if ("{{user.role}}" === "manager") {
+                                return "<button class='edit-btn'>Edit</button>";
+                            } else {
+                                return "";
+                            }
+                        }
                     }
                 ]
             });
@@ -60,64 +134,109 @@
         });
 
         function openEditModal(data) {
-            $('#editModal').find('input[name="_id"]').val(data._id);
-            $('#editModal').find('input[name="produceName"]').val(data.produceName);
-            $('#editModal').find('input[name="dealerName"]').val(data.dealerName);
-            $('#editModal').find('input[name="Type"]').val(data.Type);
-            $('#editModal').find('input[name="Cost"]').val(data.Cost,);
-            $('#editModal').find('input[name="Date"]').val(data.Date);
-            $('#editModal').find('input[name="BranchName"]').val(data.BranchName);
-            $('#editModal').find('input[name="Time"]').val(data.Time);
-            $('#editModal').find('input[name="Tonnage"]').val(data.Tonnage);
-            $('#editModal').find('input[name="phone"]').val(data.phone);
-            $('#editModal').css('display', 'block');
+            document.getElementById('editId').value = data._id;
+            document.getElementById('editProduceName').value = data.produceName;
+            document.getElementById('editDealerName').value = data.dealerName;
+            document.getElementById('editType').value = data.Type;
+            document.getElementById('editCost').value = data.Cost;
+            document.getElementById('editDate').value = data.Date.split('T')[0];
+            document.getElementById('editBranchName').value = data.BranchName;
+            document.getElementById('editTime').value = data.Time;
+            document.getElementById('editTonnage').value = data.Tonnage;
+            document.getElementById('editPhone').value = data.phone;
+            document.getElementById('editModal').style.display = 'block';
         }
 
-        $(document).ready(function () {
-            $('#editForm').on('submit', function (event) {
-                event.preventDefault();
-                var formData = $(this).serialize();
-                $.ajax({
-                    url: '/updateProcurementData',
-                    type: 'POST',
-                    data: formData,
-                    success: function (response) {
-                        alert('Data updated successfully!');
-                        $('#editModal').css('display', 'none');
-                        $('#procurementTable').DataTable().ajax.reload();
-                    },
-                    error: function (error) {
-                        alert('Error updating data');
-                    }
-                });
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = {
+                _id: document.getElementById('editId').value,
+                produceName: document.getElementById('editProduceName').value,
+                dealerName: document.getElementById('editDealerName').value,
+                Type: document.getElementById('editType').value,
+                Cost: document.getElementById('editCost').value,
+                Date: document.getElementById('editDate').value,
+                BranchName: document.getElementById('editBranchName').value,
+                Time: document.getElementById('editTime').value,
+                Tonnage: document.getElementById('editTonnage').value,
+                phone: document.getElementById('editPhone').value
+            };
+
+            fetch('/updateProcurementData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert('Data updated successfully!');
+                document.getElementById('editModal').style.display = 'none';
+                $('#procurementTable').DataTable().ajax.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating data');
             });
         });
     </script>
 
     <div id="editModal" class="modal">
         <div class="modal-content">
+            <span class="close" onclick="document.getElementById('editModal').style.display='none'">&times;</span>
             <h2>Edit Procurement Data</h2>
             <form id="editForm">
-                <input type="hidden" name="_id">
-                <label for="produceName">Produce Name:</label>
-                <input type="text" name="produceName" required>
-                <label for="dealerName">Dealer Name:</label>
-                <input type="text" name="dealerName" required>
-                <label for="Type">Type:</label>
-                <input type="text" name="Type" required>
-                <label for="Cost">Cost:</label>
-                <input type="text" name="Cost" required>
-                <label for="Date">Date:</label>
-                <input type="date" name="Date" required>
-                <label for="BranchName">Branch Name:</label>
-                <input type="text" name="BranchName" required>
-                <label for="Time">Time:</label>
-                <input type="date" name="Time" required>
-                <label for="Tonnage">Tonnage:</label>
-                <input type="text" name="Tonnage" required>
-                <label for="phone">Phone:</label>
-                <input type="phone" name="phone" required>
-                <button type="submit">Save</button>
+                <input type="hidden" id="editId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProduceName">Produce Name:</label>
+                        <input type="text" id="editProduceName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDealerName">Dealer Name:</label>
+                        <input type="text" id="editDealerName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editType">Type:</label>
+                        <input type="text" id="editType" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCost">Cost:</label>
+                        <input type="number" id="editCost" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editDate">Date of Procurement:</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTime">Time Procured:</label>
+                        <input type="time" id="editTime" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editBranchName">Branch Name:</label>
+                        <input type="text" id="editBranchName" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTonnage">Tonnage:</label>
+                        <input type="number" id="editTonnage" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPhone">Phone:</label>
+                        <input type="tel" id="editPhone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <button type="submit">Save Changes</button>
+                </div>
             </form>
         </div>
     </div>
@@ -132,17 +251,105 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto;
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #editForm {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;  /* Increased space between label and input */
+            font-weight: bold;
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[readonly] {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;  /* Added space above the submit button */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
         }
     </style>
+
+    <script>
+        function signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                fetch('/signout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Failed to sign out. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while signing out. Please try again.');
+                });
+            }
+        }
+    </script>
 </body>
 </html>

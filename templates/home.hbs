@@ -10,7 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet">
+        rel="stylesheet"> 
+         
+        
 </head>
 
 <body>
@@ -27,23 +29,18 @@
                     <img src="/assets/home-variant.svg" alt="home" />
                     <h2><a href="/">Home</a></h2>
                 </div>
-                {{#if isLoggedIn}}
-                    <div class="sidebar-content">
-                        <img src="/assets/card-account-details-outline.svg" alt="profile" />
-                        <h2><a href="/salesPage">Sales</a></h2>
-                    </div>
-                    <div class="sidebar-content">
-                        <img src="/assets/message.svg" alt="messages" />
-                        <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
-                    </div>
-                    {{#if (eq userRole 'manager')}}
-                        <div class="sidebar-content">
-                            <img src="/assets/clock-time-three.svg" alt="history" />
-                            <h2><a href="/procurementPage">Procurement Pages</a></h2>
-                        </div>
-                    {{/if}}
-                    <!-- ... other authenticated-only sidebar items ... -->
-                {{/if}}
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
             </div>
             <div class="sidebar-bottom">
                 <div class="sidebar-content">
@@ -60,134 +57,58 @@
                 </div>
             </div>
         </div>
-        <div class="header">
-            <div class="header-left">
-
-                <div class="user-greeting">
-
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
                     <div>
                         <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                        <h2><strong>Current Available Stock</strong></h2>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
                         {{#if isLoggedIn}}
-                            <h2><strong>This is the available Stock</strong></h2>
+                            <p><strong>Welcome, {{userName}}!</strong></p>
+                            <p>Branch: {{userBranch}}</p>
                         {{else}}
-                            <h2><strong>Please sign in to view stock and access features</strong></h2>
+                            <p><strong>Guest</strong></p>
+                        {{/if}}
+                    </div>
+                    <div class="actions">
+                        {{#if isLoggedIn}}
+                            <button type="button" onclick="signOut()">Sign out</button>
+                        {{else}}
+                            <button type="button"><a href="/login">Sign in</a></button>
                         {{/if}}
                     </div>
                 </div>
             </div>
-            <div class="header-right">
-                <div class="profile-info">
-                    <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
-                    {{#if isLoggedIn}}
-                        <p><strong>Welcome, {{userName}}!</strong></p>
-                        <p>Branch: {{userBranch}}</p>
-                        <p>Role: {{userRole}}</p>
-                    {{else}}
-                        <p><strong>Guest</strong></p>
-                    {{/if}}
-                </div>
-                <div class="actions">
-                    {{#if isLoggedIn}}
-                        <button type="button" onclick="signOut()">Sign out</button>
-                    {{else}}
-                        <button type="button"><a href="/login">Sign in</a></button>
-                    {{/if}}
-                </div>
-            </div>
-        </div>
-        <div class="main-content">
             <div class="projects">
                 <h2>Current Stock</h2>
                 <div class="project-cards">
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Beans">
-                            <div class="card-content">
-                                <h2>Beans</h2>
-                                <p>Fresh Beans Straight from the Garden</p>
+                    {{#if productData.length}}
+                        {{#each productData}}
+                            <div class="card">
+                                <div class="card-content">
+                                    <img src="https://picsum.photos/200/300" alt="{{this.name}}">
+                                    <div class="card-content">
+                                        <h2>{{this.name}}</h2>
+                                        <p>Fresh {{this.name}} Straight from the Garden</p>
+                                    </div>
+                                </div>
+                                <div class="project-icons-container">
+                                    <div class="project-icons">
+                                        <label for="">{{this.tonnage}} tonnes</label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="project-icons-container">
-                            <div class="project-icons">
-                                <label for="">1000 tonnes</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Rice">
-                            <div class="card-content">
-                                <h2>Rice</h2>
-                                <p>Fresh Rice Straight from the Garden</p>
-                            </div>
-                        </div>
-                        <div class="project-icons-container">
-                            <div class="project-icons">
-                                <label for="">1000 tonnes</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Cow peas">
-                            <div class="card-content">
-                                <h2>Cow peas</h2>
-                                <p>Fresh Cow peas Straight from the Garden</p>
-                            </div>
-                        </div>
-                        <div class="project-icons-container">
-                            <div class="project-icons">
-                                <label for="">1000 tonnes</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-cards2">
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Groundnuts">
-                            <div class="card-content">
-                                <h2>Groundnuts</h2>
-                                <p>Fresh Groundnuts Straight from the Garden</p>
-                            </div>
-                        </div>
-                        <div class="project-icons-container">
-                            <div class="project-icons">
-                                <label for="">1000 tonnes</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Soybeans">
-                            <div class="card-content">
-                                <h2>Soybeans</h2>
-                                <p>Fresh Soybeans Straight from the Garden</p>
-                            </div>
-                        </div>
-                        <div class="project-icons-container">
-                            <div class="project-icons">
-                                <label for="">1000 tonnes</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="https://picsum.photos/200/300" alt="Maize">
-                            <div class="card-content">
-                                <h2>Maize</h2>
-                                <p>Fresh Maize Straight from the Garden</p>
-                            </div>
-                        </div>
-                        <div class="project-icons-container">
-                            <div class="project-icons">
-                                <label for="">1000 tonnes</label>
-                            </div>
-                        </div>
-                    </div>
+                        {{/each}}
+                    {{else}}
+                        <p>No products available at the moment.</p>
+                    {{/if}}
                 </div>
             </div>
-           
         </div>
     </div>
 

@@ -35,12 +35,11 @@ const salesSchema = new mongoose.Schema({
     salesAgentName: String,
     nationalId: String,
     dueDate: Date,
-    location: String,
     produceName: String,
     phone: String,
     type: String,
-    amountDue: String,
-    tonnage: String
+    amountDue: Number,
+    tonnage: Number
 });
 
 const procurementSchema = new mongoose.Schema({
@@ -62,4 +61,11 @@ const Sales = mongoose.model('Sales', salesSchema);
 
 const collection = new mongoose.model('Collection', loginSchema)
 
-module.exports = { collection, Sales, procurement };
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    tonnage: { type: Number, default: 0 }
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+module.exports = { collection, Sales, procurement, Product };
