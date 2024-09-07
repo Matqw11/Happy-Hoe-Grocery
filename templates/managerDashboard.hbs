@@ -17,7 +17,7 @@
         <div class="sidebar">
             <div class="sidebar-top">
                 <div class="sidebar-content">
-                    <img src="/assets/view-dashboard.svg" alt="dashboard icon" />
+                    <img src="/images/Ellipse13.png" alt="dashboard icon" />
                     <h1><a href="">Happy Hoe Grocery</a></h1>
                 </div>
             </div>
@@ -38,21 +38,12 @@
                     <img src="/assets/clock-time-three.svg" alt="history" />
                     <h2><a href="/procurementPage">Procurement Pages</a></h2>
                 </div>
-            </div>
-            <div class="sidebar-bottom">
                 <div class="sidebar-content">
-                    <img src="/assets/cog.svg" alt="settings" />
-                    <h2><a href="">Settings</a></h2>
-                </div>
-                <div class="sidebar-content">
-                    <img src="/assets/shield-check.svg" alt="support" />
-                    <h2><a href="">Privacy</a></h2>
-                </div>
-                <div class="sidebar-content">
-                    <img src="/assets/help-box.svg" alt="privacy" />
-                    <h2><a href="">Support</a></h2>
+                    <img src="/assets/shield-check.svg" alt="view sales" />
+                    <h2><a href="/viewSales">View Sales</a></h2>
                 </div>
             </div>
+        
         </div>
         <div class="main-content">
             <div class="header">
@@ -102,7 +93,8 @@
             var table = $('#procurementTable').DataTable({
                 "ajax": {
                     "url": "/fetchProcurementData",
-                    "dataSrc": ""
+                    "dataSrc": "",
+                    "cache": false
                 },
                 "columns": [
                     { "data": "produceName" },
@@ -147,38 +139,56 @@
             document.getElementById('editModal').style.display = 'block';
         }
 
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var formData = {
-                _id: document.getElementById('editId').value,
-                produceName: document.getElementById('editProduceName').value,
-                dealerName: document.getElementById('editDealerName').value,
-                Type: document.getElementById('editType').value,
-                Cost: document.getElementById('editCost').value,
-                Date: document.getElementById('editDate').value,
-                BranchName: document.getElementById('editBranchName').value,
-                Time: document.getElementById('editTime').value,
-                Tonnage: document.getElementById('editTonnage').value,
-                phone: document.getElementById('editPhone').value
-            };
+        function refreshDataTable() {
+            $('#procurementTable').DataTable().ajax.reload(null, false);
+        }
 
-            fetch('/updateProcurementData', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.text())
-            .then(result => {
-                alert('Data updated successfully!');
-                document.getElementById('editModal').style.display = 'none';
-                $('#procurementTable').DataTable().ajax.reload();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error updating data');
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            const editForm = document.getElementById('editForm');
+            if (editForm) {
+                editForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var formData = {
+                        _id: document.getElementById('editId').value,
+                        produceName: document.getElementById('editProduceName').value,
+                        dealerName: document.getElementById('editDealerName').value,
+                        Type: document.getElementById('editType').value,
+                        Cost: document.getElementById('editCost').value,
+                        Date: document.getElementById('editDate').value,
+                        BranchName: document.getElementById('editBranchName').value,
+                        Time: document.getElementById('editTime').value,
+                        Tonnage: document.getElementById('editTonnage').value,
+                        phone: document.getElementById('editPhone').value
+                    };
+
+                    console.log('Sending update request with data:', formData);
+
+                    fetch('/updateProcurementData', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log('Received response:', result);
+                        if (result.success) {
+                            alert('Data updated successfully!');
+                            document.getElementById('editModal').style.display = 'none';
+                            refreshDataTable();
+                        } else {
+                            alert('Error updating data: ' + result.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating data');
+                    });
+                });
+            } else {
+                console.error('Edit form not found in the DOM');
+            }
         });
     </script>
 

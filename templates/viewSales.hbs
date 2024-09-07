@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Sales</title>
+    <link rel="stylesheet" href="/styles/admin.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-content">
+                    <img src="/images/Ellipse13.png" alt="dashboard icon" />
+                    <h1><a href="">Happy Hoe Grocery</a></h1>
+                </div>
+            </div>
+            <div class="sidebar-middle">
+                <div class="sidebar-content">
+                    <img src="/assets/home-variant.svg" alt="home" />
+                    <h2><a href="/">Home</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/shield-check.svg" alt="view sales" />
+                    <h2><a href="/viewSales">View Sales</a></h2>
+                </div>
+            </div>
+            
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div>
+                        <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                        <h2><strong>View Sales</strong></h2>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
+                        <p><strong>Welcome, {{user.username}}!</strong></p>
+                        <p>Branch: {{user.branch}}</p>
+                    </div>
+                    <div class="actions">
+                        <button type="button" onclick="signOut()">Sign out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="sales-section">
+                <h2>All Sales</h2>
+                <div class="table-container">
+                    <table id="salesTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Buyer Name</th>
+                                <th>Sales Agent</th>
+                                <th>Sale Date</th>
+                                <th>Produce Name</th>
+                                <th>Tonnage</th>
+                                <th>Sale Type</th>
+                                <th>Amount Paid</th>
+                                <th>Amount Due</th>
+                                <th>Contacts</th>
+                                <th>Date of Dispatch</th>
+                                <th>Due Date</th>
+                                <th>Location</th>
+                                <th>National ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sales data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#salesTable').DataTable({
+                "ajax": {
+                    "url": "/fetchAllSales",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "buyerName" },
+                    { "data": "salesAgentName" },
+                    { "data": "saleDate", "render": function(data) { return new Date(data).toLocaleDateString(); } },
+                    { "data": "produceName" },
+                    { "data": "tonnage" },
+                    { "data": "saleType" },
+                    { "data": "amountPaid" },
+                    { "data": "amountDue" },
+                    { "data": "contacts" },
+                    { "data": "dateOfDispatch", "render": function(data) { return new Date(data).toLocaleDateString(); } },
+                    { "data": "dueDate", "render": function(data) { return new Date(data).toLocaleDateString(); } },
+                    { "data": "location" },
+                    { "data": "nationalId" }
+                ]
+            });
+        });
+
+        function signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                fetch('/signout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Failed to sign out. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while signing out. Please try again.');
+                });
+            }
+        }
+    </script>
+
+    <style>
+        .main-content {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1000;
+        }
+    </style>
+</body>
+</html>

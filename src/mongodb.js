@@ -33,27 +33,74 @@ const loginSchema = new mongoose.Schema({
 const salesSchema = new mongoose.Schema({
     buyerName: String,
     salesAgentName: String,
-    nationalId: String,
-    dueDate: Date,
+    saleDate: {
+        type: Date,
+        required: true
+    },
+    saleType: {
+        type: String,
+        enum: ['cash', 'credit'],
+        required: true
+    },
     produceName: String,
-    phone: String,
-    type: String,
-    amountDue: Number,
-    tonnage: Number
+    tonnage: Number,
+    amountPaid: {
+        type: Number,
+        min: [10000, 'Amount paid must be at least 10,000 UGX'],
+        required: function() { return this.saleType === 'cash'; }
+    },
+    amountDue: {
+        type: Number,
+        required: function() { return this.saleType === 'credit'; }
+    },
+    contacts: {
+        type: String,
+        required: function() { return this.saleType === 'credit'; }
+    },
+    dateOfDispatch: {
+        type: Date,
+        required: function() { return this.saleType === 'credit'; }
+    },
+    dueDate: {
+        type: Date,
+        required: function() { return this.saleType === 'credit'; }
+    },
+    location: {
+        type: String,
+        required: function() { return this.saleType === 'credit'; }
+    },
+    nationalId: {
+        type: String,
+        required: function() { return this.saleType === 'credit'; }
+    }
 });
 
 const procurementSchema = new mongoose.Schema({
     produceName: String,
     dealerName: String,
     Type: String,
-    Cost: String,
+    Cost: Number,
     Date: Date,
     BranchName: String,
     Time: String,
-    Tonnage: String,
-    phone: String // Add this line
+    Tonnage: Number,
+    phone: String
 });
 
+const creditSaleSchema = new mongoose.Schema({
+    buyerName: { type: String, required: true },
+    salesAgentName: { type: String, required: true },
+    saleDate: { type: Date, required: true },
+    produceName: { type: String, required: true },
+    tonnage: { type: Number, required: true },
+    amountDue: { type: Number, required: true },
+    contacts: { type: String, required: true },
+    dateOfDispatch: { type: Date, required: true },
+    dueDate: { type: Date, required: true },
+    location: { type: String, required: true },
+    nationalId: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+});
 
 const procurement = mongoose.model("procurement", procurementSchema);
 
@@ -68,4 +115,6 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-module.exports = { collection, Sales, procurement, Product };
+const CreditSale = mongoose.model('CreditSale', creditSaleSchema);
+
+module.exports = { collection, Sales, procurement, Product, CreditSale };

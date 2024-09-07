@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/styles/login.css">
+    <link rel="stylesheet" href="/styles/login_page.css">
 </head>
 <body>
+    <div class="bgcontainer">
+        <div class="menu">
+            <div class="logo">
+                <img src="/images/Ellipse13.png" width="100px" height="100px" alt="Happy Food Logo">
+            </div>
+        </div>
     <div class="login-container">
         <h2>Login</h2>
         <div id="error-message" style="color: red; display: none;"></div>
@@ -22,8 +28,8 @@
             <button type="submit">Login</button>
         </form>
         <p>Don't have an account? <a href="/signup">Sign up</a></p>
+        </div>
     </div>
-
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -56,3 +62,5 @@
     </script>
 </body>
 </html>
+
+
