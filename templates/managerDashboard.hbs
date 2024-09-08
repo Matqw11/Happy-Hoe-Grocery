@@ -42,6 +42,10 @@
                     <img src="/assets/shield-check.svg" alt="view sales" />
                     <h2><a href="/viewSales">View Sales</a></h2>
                 </div>
+                <div class="sidebar-content">
+        <img src="/assets/chart-bar.jpg" alt="reports" />
+        <h2><a href="/reportspage">Reports</a></h2>
+    </div>
             </div>
         
         </div>
@@ -50,7 +54,7 @@
                 <div class="header-left">
                     <div>
                         <p><strong>Welcome to Happy Hoe Grocery</strong></p>
-                        <h2><strong>Manager Dashboard</strong></h2>
+                        <h2><strong>Procured Products Data</strong></h2>
                     </div>
                 </div>
                 <div class="header-right">
@@ -174,7 +178,7 @@
                     .then(result => {
                         console.log('Received response:', result);
                         if (result.success) {
-                            alert('Data updated successfully!');
+                            alert(result.message);
                             document.getElementById('editModal').style.display = 'none';
                             refreshDataTable();
                         } else {

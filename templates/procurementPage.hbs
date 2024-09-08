@@ -43,6 +43,10 @@
                     <img src="/assets/shield-check.svg" alt="view sales" />
                     <h2><a href="/viewSales">View Sales</a></h2>
                 </div>
+                <div class="sidebar-content">
+        <img src="/assets/chart-bar.jpg" alt="reports" />
+        <h2><a href="/reportspage">Reports</a></h2>
+    </div>
             </div>
             
         </div>
@@ -72,7 +76,7 @@
                 {{#if (eq user.role 'manager')}}
                     <div class="form-container">
                         <h1>PROCUREMENT</h1>
-                        <form action="/procurementPage" method="POST">
+                        <form action="/procurementPage" method="POST" enctype="multipart/form-data">
                             <div class="procurement-grid">
                                 <div class="form-group">
                                     <input class="form-input" type="text" id="produce-name" placeholder="Produce Name" name="produceName" required>
@@ -98,7 +102,11 @@
                                 </div>
                                 <div class="form-group">
                                     <input class="form-input" type="tel" id="phone" placeholder="Contact (e.g., 0737245234)" name="phone" minlength="10" pattern="(\+256|0)[0-9]{9}" title="Please enter a valid Ugandan phone number (e.g., +256XXXXXXXXX or 0XXXXXXXXX)">
-                            </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productImage">Product Image:</label>
+                                    <input type="file" id="productImage" name="productImage" accept="image/*">
+                                </div>
                             <div class="buttons">
                                 <button type="button" class="cancel-btn">CANCEL</button>
                                 <button type="submit" class="save-btn">SAVE</button>

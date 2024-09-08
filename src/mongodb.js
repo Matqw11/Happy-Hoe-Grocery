@@ -67,11 +67,19 @@ const salesSchema = new mongoose.Schema({
     },
     location: {
         type: String,
-        required: function() { return this.saleType === 'credit'; }
+        required: function() { return this.saleType === 'credit'; },
+        minlength: 2
     },
     nationalId: {
         type: String,
-        required: function() { return this.saleType === 'credit'; }
+        required: function() { return this.saleType === 'credit'; },
+        validate: {
+            validator: function(v) {
+                return /^(CM|CF|PM)[A-Z0-9]{12}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid National ID. It must be 14 characters long and start with CM, CF, or PM.`
+        },
+        set: v => v.toUpperCase() // Convert to uppercase before saving
     }
 });
 
@@ -110,7 +118,8 @@ const collection = new mongoose.model('Collection', loginSchema)
 
 const productSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
-    tonnage: { type: Number, default: 0 }
+    tonnage: { type: Number, default: 0 },
+    imageUrl: String
 });
 
 const Product = mongoose.model('Product', productSchema);

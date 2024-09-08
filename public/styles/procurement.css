@@ -130,3 +130,10 @@ input {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+.form-group input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+

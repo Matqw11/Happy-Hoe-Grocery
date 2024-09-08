@@ -43,6 +43,10 @@
                     <img src="/assets/shield-check.svg" alt="view sales" />
                     <h2><a href="/viewSales">View Sales</a></h2>
                 </div>
+                <div class="sidebar-content">
+        <img src="/assets/chart-bar.jpg" alt="reports" />
+        <h2><a href="/reportspage">Reports</a></h2>
+    </div>
             </div>
            
         </div>
@@ -71,10 +75,11 @@
                     <form action="/salesPage" method="POST">
                         <div class="sales-grid">
                             <div class="form-group">
-                                <input class="form-input" type="text" id="buyerName" placeholder="Buyer Name" name="buyerName" required>
+                                <input class="form-input" type="text" id="buyerName" minlength="2" placeholder="Buyer Name" name="buyerName" required>
                                 <input class="form-input" type="text" id="salesAgentName" placeholder="Sales Agent Name" name="salesAgentName" value="{{user.username}}" readonly>
                             </div>
                             <div class="form-group">
+                                <label for="saleDate">Sale Date:</label>
                                 <input class="form-input" type="date" id="saleDate" name="saleDate" required>
                                 <select class="form-input" id="produceName" name="produceName" required>
                                     <option value="">Select Product</option>
@@ -97,16 +102,22 @@
                         </div>
                         <div id="creditFields" style="display: none;">
                             <div class="form-group">
-                                <input class="form-input" type="number" id="amountDue" placeholder="Amount Due (UGX)" name="amountDue" min="0" step="1">
+                                <input class="form-input" type="number" id="amountDue" placeholder="Amount Due (UGX)" name="amountDue" min="10000" step="1">
                                 <input class="form-input" type="tel" id="contacts" placeholder="Contacts" name="contacts">
                             </div>
                             <div class="form-group">
+                                <label for="dateOfDispatch">Date of Dispatch:</label>
                                 <input class="form-input" type="date" id="dateOfDispatch" placeholder="Date of Dispatch" name="dateOfDispatch">
+                                <label for="dueDate">Due Date:</label>
                                 <input class="form-input" type="date" id="dueDate" placeholder="Due Date" name="dueDate">
                             </div>
                             <div class="form-group">
-                                <input class="form-input" type="text" id="location" placeholder="Location" name="location">
-                                <input class="form-input" type="text" id="nationalId" placeholder="National ID" name="nationalId">
+                                <input class="form-input" type="text" id="location" placeholder="Location" name="location" minlength="2" required>
+                                <input class="form-input" type="text" id="nationalId" placeholder="National ID" name="nationalId" required 
+                                       pattern="^(CM|CF|PM)[A-Z0-9]{12}$" 
+                                       minlength="14" maxlength="14"
+                                       title="National ID must be 14 characters long and start with CM, CF, or PM"
+                                       oninput="this.value = this.value.toUpperCase()">
                             </div>
                         </div>
                         <div class="buttons">
@@ -198,7 +209,7 @@
                 <div class="receipt-header">
                     <img src="/images/Ellipse13.png" alt="Happy Hoe Grocery Logo" class="receipt-logo">
                     <h1>Happy Hoe Grocery</h1>
-                    <p>Your Trusted Agricultural Partner</p>
+                    <p>Your Trusted Grain Supplier</p>
                 </div>
                 <div class="receipt-body">
                     <h2>Sale Receipt</h2>
@@ -213,7 +224,11 @@
                     ${sale.saleType === 'cash' 
                         ? `<p><strong>Amount Paid:</strong> ${sale.amountPaid.toLocaleString()} UGX</p>`
                         : `<p><strong>Amount Due:</strong> ${sale.amountDue.toLocaleString()} UGX</p>
-                           <p><strong>Due Date:</strong> ${new Date(sale.dueDate).toLocaleDateString()}</p>`
+                           <p><strong>Due Date:</strong> ${new Date(sale.dueDate).toLocaleDateString()}</p>
+                           <p><strong>Contacts:</strong> ${sale.contacts}</p>
+                           <p><strong>Date of Dispatch:</strong> ${new Date(sale.dateOfDispatch).toLocaleDateString()}</p>
+                           <p><strong>Location:</strong> ${sale.location}</p>
+                           <p><strong>National ID:</strong> ${sale.nationalId}</p>`
                     }
                     <hr>
                     <p class="thank-you">Thank you for your business!</p>
@@ -292,6 +307,14 @@
     } else {
         creditFields.style.display = 'none';
         // ... existing code ...
+    }
+});
+
+document.getElementById('location').addEventListener('input', function() {
+    if (this.value.length < 2) {
+        this.setCustomValidity('Location must be at least 2 characters long');
+    } else {
+        this.setCustomValidity('');
     }
 });
     </script>
